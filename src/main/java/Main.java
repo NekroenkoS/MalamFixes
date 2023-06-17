@@ -63,7 +63,9 @@ public class Main {
      */
     public static void changeMalamProject(String userName, String password, String oldProjectNumber,String newProjectNumber) throws  InterruptedException {
 
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\USER\\ChangeProject\\chromedriver.exe");
+        String projectPath = System.getProperty("user.dir");
+        String driverPath = projectPath + "\\chromedriver.exe";
+        System.setProperty("webdriver.chrome.driver", driverPath);
         WebDriver driver = new ChromeDriver();
         connectToMalam(userName,password,driver);
 
