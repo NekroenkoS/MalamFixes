@@ -5,7 +5,6 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-
 import java.time.Duration;
 import java.util.List;
 
@@ -17,9 +16,8 @@ public class Main {
         String oldProjectNumber="oldProjectNumber"; //מספר פרוייקט אותו רוצים להחליף
         String newProjectNumber="newProjectNumber"; //מספר פרוייקט שרוצים שיישמר
 
-         changeMalamProject(userName,password,oldProjectNumber,newProjectNumber);
-
-        // calculateHours(userName,password);
+        changeMalamProject(userName,password,oldProjectNumber,newProjectNumber);
+        //calculateHours(userName,password);
     }
 
     /*
@@ -84,10 +82,14 @@ public class Main {
 
          רצים בלולאה על כל אלמנט שנמצא, מוחקים את הערך הנוכחי שיש לו ומחליפים בפרוייקט החדש
          */
+        WebElement malamTable = driver.findElement(By.cssSelector("div[id='pt1:dataTable::db']"));
+        scrollToElement(driver,malamTable);
+
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[contains(@id, 'dataTable') and @value='" + oldProjectNumber + "']")));
         List<WebElement> elements = driver.findElements(By.xpath("//input[contains(@id, 'dataTable') and @value='" + oldProjectNumber + "']"));
         System.out.println(elements.size());
+
         for (WebElement element : elements) {
             scrollToElement(driver, element); // בגלל שהמלמ משתמש בחלון גלילה בתוך האתר אז צריך להביא לפוקוס את האמלנט, נבנתה מתודה נוספת לעשות זאת
             element.clear();
