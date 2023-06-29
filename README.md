@@ -1,4 +1,4 @@
-# QT_Malam_Project_Switch
+# QT Malam Project Switcher
 
 Switches projects in the Malam website. Specifically designed for BNHP-QT.
 
