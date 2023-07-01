@@ -13,10 +13,10 @@ import java.util.Objects;
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {
-        String userName = "317149953"; // שם משתמש למלמ
-        String password = "z@27A7h3*ruD!a"; //סיסמא למלמ
-        String oldProjectNumber = "300530732"; //מספר פרוייקט אותו רוצים להחליף
-        String newProjectNumber = "300536419"; //מספר פרוייקט שרוצים שיישמר
+        String userName = "userName"; // שם משתמש למלמ
+        String password = "password"; //סיסמא למלמ
+        String oldProjectNumber = "oldProjectNumber"; //מספר פרוייקט אותו רוצים להחליף
+        String newProjectNumber = "newProjectNumber"; //מספר פרוייקט שרוצים שיישמר
 
         //changeMalamProject(userName,password,oldProjectNumber,newProjectNumber);
         calculateHours(userName, password);
