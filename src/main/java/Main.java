@@ -122,29 +122,19 @@ public class Main {
 
     private static void calculateHours(String userName, String password) throws InterruptedException {
         WebDriver driver = webDriverInit();
-
         connectToMalam(userName, password, driver);
-
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"pt1:dataTable::db\"]/table/tbody/tr[1]")));
-
-        WebElement button = driver.findElement(By.xpath("//*[@id=\"pt1:prevMonth\"]"));
-        button.click();
-
-         new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"pt1:prevMonth\"]")));
-
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"pt1:dataTable::db\"]/table/tbody/tr[1]")));
-        button.click();
-
-         new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"pt1:prevMonth\"]")));
-
+//        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"pt1:dataTable::db\"]/table/tbody/tr[1]")));
+//
+//        WebElement button = driver.findElement(By.xpath("//*[@id=\"pt1:prevMonth\"]"));
+//        button.click();
+//
+//         new WebDriverWait(driver, Duration.ofSeconds(10))
+//                .until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"pt1:prevMonth\"]")));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"pt1:dataTable::db\"]/table/tbody/tr[1]")));
 
         List<WebElement> elements = driver.findElements(By.xpath("//*[@id=\"pt1:dataTable::db\"]/table/tbody/tr"));
-        System.out.println(elements.size());
         int myTotalWorkHours = 0;
         int myTotalWorkMiuntes = 0;
         int totalWorkHoursNeeded = 0;
@@ -156,7 +146,7 @@ public class Main {
 
                 String label = yourDailyWorkHours.getText();
                 if (!Objects.equals(label, "")) {
-                    System.out.println(row + ". This is your work hours: " + label);
+                   // System.out.println(row + ". This is your work hours: " + label);
 
                     // Extract the hh:mm values from the label
                     String[] timeParts = label.split(":");
@@ -176,7 +166,7 @@ public class Main {
                     WebElement workHoursNeededElement=element.findElement(By.xpath("//*[@id=\"pt1:dataTable::db\"]/table/tbody/tr["+(row+1)+"]/td[15]/nobr/span"));
                     String workHoursNeeded = workHoursNeededElement.getAttribute("innerHTML").trim();
                     if (!Objects.equals(workHoursNeeded, "")) {
-                        System.out.println(row +". This is work hours needed: "+workHoursNeeded);
+                   //     System.out.println(row +". This is work hours needed: "+workHoursNeeded);
                         String[] totalWorkParts = workHoursNeeded.split(":");
                         int totalWorkHours = Integer.parseInt(totalWorkParts[0]);
                         int totalWorkMinutes = Integer.parseInt(totalWorkParts[1]);
