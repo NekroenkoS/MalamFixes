@@ -5,25 +5,27 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+
 import java.time.Duration;
 import java.util.List;
+import java.util.Objects;
 
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {
-        String userName = "userName" ; // שם משתמש למלמ
-        String password = "password"; //סיסמא למלמ
-        String oldProjectNumber="oldProjectNumber"; //מספר פרוייקט אותו רוצים להחליף
-        String newProjectNumber="newProjectNumber"; //מספר פרוייקט שרוצים שיישמר
+        String userName = "317149953"; // שם משתמש למלמ
+        String password = "z@27A7h3*ruD!a"; //סיסמא למלמ
+        String oldProjectNumber = "300530732"; //מספר פרוייקט אותו רוצים להחליף
+        String newProjectNumber = "300536419"; //מספר פרוייקט שרוצים שיישמר
 
-        changeMalamProject(userName,password,oldProjectNumber,newProjectNumber);
-        //calculateHours(userName,password);
+        //changeMalamProject(userName,password,oldProjectNumber,newProjectNumber);
+        calculateHours(userName, password);
     }
 
     /*
     מתודה מאתחלת את הדרייבר של כרום
      */
-    private static WebDriver webDriverInit(){
+    private static WebDriver webDriverInit() {
         String projectPath = System.getProperty("user.dir");
         String driverPath = projectPath + "\\chromedriver.exe";
         System.setProperty("webdriver.chrome.driver", driverPath);
@@ -69,10 +71,10 @@ public class Main {
     המתודה מתחברת לחשבון הרלוונטי במלמ
     מחליפה את כל הפרוייקטים בפרוייקטים החדשים ועושה שמירה
      */
-    private static void changeMalamProject(String userName, String password, String oldProjectNumber, String newProjectNumber) throws  InterruptedException {
+    private static void changeMalamProject(String userName, String password, String oldProjectNumber, String newProjectNumber) throws InterruptedException {
 
         WebDriver driver = webDriverInit();
-        connectToMalam(userName,password,driver);
+        connectToMalam(userName, password, driver);
 
         /*
         מחפשים בדף את כל האלמנטים שיש להם בנתיב את המילה
@@ -83,7 +85,7 @@ public class Main {
          רצים בלולאה על כל אלמנט שנמצא, מוחקים את הערך הנוכחי שיש לו ומחליפים בפרוייקט החדש
          */
         WebElement malamTable = driver.findElement(By.cssSelector("div[id='pt1:dataTable::db']"));
-        scrollToElement(driver,malamTable);
+        scrollToElement(driver, malamTable);
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[contains(@id, 'dataTable') and @value='" + oldProjectNumber + "']")));
@@ -117,54 +119,108 @@ public class Main {
     ***עדיין בפיתוח***
     מתודה שמחשבת כמה שעות עשינו עד כה החודש מול כמה צריך היה לעשות החודש עד כה
      */
+
     private static void calculateHours(String userName, String password) throws InterruptedException {
         WebDriver driver = webDriverInit();
 
-        connectToMalam(userName,password,driver);
+        connectToMalam(userName, password, driver);
 
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//span[starts-with(@id, 'pt1:dataTable') and contains(@id, ':hourTotalLabel')]/label")));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"pt1:dataTable::db\"]/table/tbody/tr[1]")));
 
-        List<WebElement> elements = driver.findElements(By.xpath("//span[starts-with(@id, 'pt1:dataTable') and contains(@id, ':hourTotalLabel')]/label"));
-        int timesClockedIn = elements.size();
-        int yourTotalMinutes = 0;
+        WebElement button = driver.findElement(By.xpath("//*[@id=\"pt1:prevMonth\"]"));
+        button.click();
 
+         new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"pt1:prevMonth\"]")));
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"pt1:dataTable::db\"]/table/tbody/tr[1]")));
+        button.click();
+
+         new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id=\"pt1:prevMonth\"]")));
+
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"pt1:dataTable::db\"]/table/tbody/tr[1]")));
+
+        List<WebElement> elements = driver.findElements(By.xpath("//*[@id=\"pt1:dataTable::db\"]/table/tbody/tr"));
+        System.out.println(elements.size());
+        int myTotalWorkHours = 0;
+        int myTotalWorkMiuntes = 0;
+        int totalWorkHoursNeeded = 0;
+        int totalWorkMinutesNeeded=0;
+        int row=0;
         for (WebElement element : elements) {
-            String hourText = (String) ((JavascriptExecutor) driver).executeScript("return arguments[0].textContent;", element);
-            if(!hourText.isEmpty()) {
-                int hour = Integer.parseInt(hourText.split(":")[0]);
-                int minutes = Integer.parseInt(hourText.split(":")[1]);
-                int totalMinutesForElement = hour * 60 + minutes;
-                yourTotalMinutes += totalMinutesForElement;
-            }
+            scrollToElement(driver, element);
+            WebElement yourDailyWorkHours = element.findElement(By.xpath("//*[@id=\"pt1:dataTable:"+row+":hourTotalLabel\"]"));
+
+                String label = yourDailyWorkHours.getText();
+                if (!Objects.equals(label, "")) {
+                    System.out.println(row + ". This is your work hours: " + label);
+
+                    // Extract the hh:mm values from the label
+                    String[] timeParts = label.split(":");
+                    int hours = Integer.parseInt(timeParts[0]);
+                    int minutes = Integer.parseInt(timeParts[1]);
+
+                    // Sum the hours and minutes
+                    myTotalWorkHours += hours;
+                    myTotalWorkMiuntes += minutes;
+
+                    // Adjust the minutes if it exceeds 59
+                    if (myTotalWorkMiuntes >= 60) {
+                        myTotalWorkHours += myTotalWorkMiuntes / 60;
+                        myTotalWorkMiuntes %= 60;
+                    }
+
+                    WebElement workHoursNeededElement=element.findElement(By.xpath("//*[@id=\"pt1:dataTable::db\"]/table/tbody/tr["+(row+1)+"]/td[15]/nobr/span"));
+                    String workHoursNeeded = workHoursNeededElement.getAttribute("innerHTML").trim();
+                    if (!Objects.equals(workHoursNeeded, "")) {
+                        System.out.println(row +". This is work hours needed: "+workHoursNeeded);
+                        String[] totalWorkParts = workHoursNeeded.split(":");
+                        int totalWorkHours = Integer.parseInt(totalWorkParts[0]);
+                        int totalWorkMinutes = Integer.parseInt(totalWorkParts[1]);
+
+                        // Sum the total work hours and minutes
+                        totalWorkHoursNeeded += totalWorkHours;
+                        totalWorkMinutesNeeded += totalWorkMinutes;
+
+                        // Adjust the minutes if it exceeds 59
+                        if (totalWorkMinutesNeeded >= 60) {
+                            totalWorkHoursNeeded += totalWorkMinutesNeeded / 60;
+                            totalWorkMinutesNeeded %= 60;
+                        }
+                    }
+                }
+        row++;
         }
+        System.out.println("Total Work Hours: "+totalWorkHoursNeeded+":"+totalWorkMinutesNeeded);
+        System.out.println("Total Hours Worked: "+myTotalWorkHours+":"+myTotalWorkMiuntes);
+        // Calculate the difference between myTotalWorkHours and totalWorkHoursNeeded
+        int differenceHours = myTotalWorkHours - totalWorkHoursNeeded;
+        int differenceMinutes = myTotalWorkMiuntes - totalWorkMinutesNeeded;
+        String differenceSign = (differenceHours >= 0) ? "+" : "-";
+        differenceHours = Math.abs(differenceHours);
+        differenceMinutes = Math.abs(differenceMinutes);
 
-        int yourTotalHours = yourTotalMinutes / 60;
-
-        int yourRemainingMinutes = yourTotalMinutes % 60;
-
-        System.out.println("Your Total time: " + yourTotalHours + " hours " + yourRemainingMinutes + " minutes");
-
-        int totalMinutesNeeded=0;
-
-        elements = driver.findElements(By.xpath("//td[nobr/span[normalize-space(text())='09:00' or normalize-space(text())='05:00' or normalize-space(text())='06:00' or normalize-space(text())='08:30']]"));
-
-        for (WebElement element : elements) {
-            String text = element.getAttribute("textContent").trim();
-            if(text.matches("\\d{2}:\\d{2}")) {
-                int hour = Integer.parseInt(text.split(":")[0]);
-                int minutes = Integer.parseInt(text.split(":")[1]);
-                int totalMinutesForElement = hour * 60 + minutes;
-                totalMinutesNeeded += totalMinutesForElement;
+        // Display the difference
+        String differenceTime = String.format("%02d:%02d", differenceHours, differenceMinutes);
+        if (differenceHours > 0 || differenceMinutes > 0) {
+            String differenceMessage = "You are " + differenceSign + " " + differenceTime + " ";
+            if (differenceHours > 0) {
+                differenceMessage += "hours ";
             }
+            if (differenceMinutes > 0) {
+                differenceMessage += "and minutes ";
+            }
+            if (differenceSign.equals("+")) {
+                differenceMessage += "above the needed hours.";
+            } else {
+                differenceMessage += "below the needed hours.";
+            }
+            System.out.println(differenceMessage);
+        } else {
+            System.out.println("You have fulfilled the needed hours.");
         }
-
-        int totalHoursNeeded = totalMinutesNeeded / 60;
-
-        int remainingMinutes = totalMinutesNeeded % 60;
-
-        System.out.println("Needed Total time: " + totalHoursNeeded + " hours " + remainingMinutes + " minutes");
-
     }
 }
