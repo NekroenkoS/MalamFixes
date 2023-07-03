@@ -8,16 +8,32 @@ import java.time.Duration;
 import java.util.List;
 
 public class ChangeProjectNumber {
+    WebDriver driver;
+    String oldProjectNumber;
+    String newProjectNumber;
 
-    public ChangeProjectNumber(String userName, String password, String oldProjectNumber, String newProjectNumber) throws InterruptedException {
+    public ChangeProjectNumber(String userName, String password) {
+        this.driver = new Utils().webDriverInit();
+        new ConnectToMalam(driver).start(userName, password);
+    }
 
-        WebDriver driver = new Utils().webDriverInit();
-        new ConnectToMalam(userName, password, driver).start();
+    public void start(String oldProjectNumber, String newProjectNumber){
+        this.oldProjectNumber = oldProjectNumber;
+        this.newProjectNumber = newProjectNumber;
+        waitForMalamVisibility();
+        updateProjectNumber(oldProjectNumber, newProjectNumber);
+        clickSave();
+    }
 
+    private void waitForMalamVisibility() {
         WebElement malamTable = driver.findElement(By.cssSelector("div[id='pt1:dataTable::db']"));
         new Utils().scrollToElement(driver, malamTable);
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
         wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//input[contains(@id, 'dataTable') and @value='" + oldProjectNumber + "']")));
+
+    }
+
+    private void updateProjectNumber(String oldProjectNumber, String newProjectNumber) {
         List<WebElement> elements = driver.findElements(By.xpath("//input[contains(@id, 'dataTable') and @value='" + oldProjectNumber + "']"));
         System.out.println(elements.size());
         for (WebElement element : elements) {
@@ -25,11 +41,10 @@ public class ChangeProjectNumber {
             element.clear();
             element.sendKeys(newProjectNumber);
         }
-        //לוחצים שמירה
-        WebElement button = driver.findElement(By.xpath("//td/button[@id='pt1:saveButton']"));
-        button.click();
-        Thread.sleep(10000); // ממתינים כדי שנוכל לראות שהכל השתנה
-        driver.quit(); // סוגרים את הדפדפן
     }
 
+    private void clickSave() {
+        WebElement button = driver.findElement(By.xpath("//td/button[@id='pt1:saveButton']"));
+        button.click();
+    }
 }

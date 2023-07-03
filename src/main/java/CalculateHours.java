@@ -10,57 +10,68 @@ import java.util.Objects;
 
 public class CalculateHours {
 
-    public void calculateHours(String userName, String password) {
-        WebDriver driver = new Utils().webDriverInit();
-        new ConnectToMalam(userName,password,driver).start();
-        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+    private final WebDriver driver;
+    private int myTotalWorkHours;
+    private int myTotalWorkMinutes;
+    private int totalWorkHoursNeeded;
+    private int totalWorkMinutesNeeded;
+    private int row;
 
-        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"pt1:dataTable::db\"]/table/tbody/tr[1]")));
+    public CalculateHours(String userName, String password) {
+        driver = new Utils().webDriverInit();
+        new ConnectToMalam(driver).start(userName, password);
+        this.myTotalWorkHours = 0;
+        this.myTotalWorkMinutes = 0;
+        this.totalWorkHoursNeeded = 0;
+        this.totalWorkMinutesNeeded = 0;
+        this.row = 0;
 
+    }
+
+    public void start(){
+        waitForMalam();
         List<WebElement> elements = driver.findElements(By.xpath("//*[@id=\"pt1:dataTable::db\"]/table/tbody/tr"));
-        int myTotalWorkHours = 0;
-        int myTotalWorkMiuntes = 0;
-        int totalWorkHoursNeeded = 0;
-        int totalWorkMinutesNeeded=0;
-        int row=0;
+        handleHours(elements);
+        displayMessage();
+        calcDiffHours();
+    }
+
+    private void waitForMalam(){
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id=\"pt1:dataTable::db\"]/table/tbody/tr[1]")));
+    }
+
+    private void handleHours(List<WebElement> elements){
         for (WebElement element : elements) {
+            new Utils().scrollToElement(driver, element);
 
-           new Utils().scrollToElement(driver, element);
-
-            WebElement yourDailyWorkHours = element.findElement(By.xpath("//*[@id=\"pt1:dataTable:"+row+":hourTotalLabel\"]"));
-
+            WebElement yourDailyWorkHours = element.findElement(By.xpath("//*[@id=\"pt1:dataTable:" + row + ":hourTotalLabel\"]"));
             String label = yourDailyWorkHours.getText();
-            if (!Objects.equals(label, "")) {
-                // System.out.println(row + ". This is your work hours: " + label);
 
-                // Extract the hh:mm values from the label
+            if (!Objects.equals(label, "")) {
                 String[] timeParts = label.split(":");
                 int hours = Integer.parseInt(timeParts[0]);
                 int minutes = Integer.parseInt(timeParts[1]);
 
-                // Sum the hours and minutes
                 myTotalWorkHours += hours;
-                myTotalWorkMiuntes += minutes;
+                myTotalWorkMinutes += minutes;
 
-                // Adjust the minutes if it exceeds 59
-                if (myTotalWorkMiuntes >= 60) {
-                    myTotalWorkHours += myTotalWorkMiuntes / 60;
-                    myTotalWorkMiuntes %= 60;
+                if (myTotalWorkMinutes >= 60) {
+                    myTotalWorkHours += myTotalWorkMinutes / 60;
+                    myTotalWorkMinutes %= 60;
                 }
 
-                WebElement workHoursNeededElement=element.findElement(By.xpath("//*[@id=\"pt1:dataTable::db\"]/table/tbody/tr["+(row+1)+"]/td[15]/nobr/span"));
+                WebElement workHoursNeededElement = element.findElement(By.xpath("//*[@id=\"pt1:dataTable::db\"]/table/tbody/tr[" + (row + 1) + "]/td[15]/nobr/span"));
                 String workHoursNeeded = workHoursNeededElement.getAttribute("innerHTML").trim();
+
                 if (!Objects.equals(workHoursNeeded, "")) {
-                    //     System.out.println(row +". This is work hours needed: "+workHoursNeeded);
                     String[] totalWorkParts = workHoursNeeded.split(":");
                     int totalWorkHours = Integer.parseInt(totalWorkParts[0]);
                     int totalWorkMinutes = Integer.parseInt(totalWorkParts[1]);
 
-                    // Sum the total work hours and minutes
                     totalWorkHoursNeeded += totalWorkHours;
                     totalWorkMinutesNeeded += totalWorkMinutes;
 
-                    // Adjust the minutes if it exceeds 59
                     if (totalWorkMinutesNeeded >= 60) {
                         totalWorkHoursNeeded += totalWorkMinutesNeeded / 60;
                         totalWorkMinutesNeeded %= 60;
@@ -69,34 +80,37 @@ public class CalculateHours {
             }
             row++;
         }
-        System.out.println("Total Work Hours: "+totalWorkHoursNeeded+":"+totalWorkMinutesNeeded);
-        System.out.println("Total Hours Worked: "+myTotalWorkHours+":"+myTotalWorkMiuntes);
-        // Calculate the difference between myTotalWorkHours and totalWorkHoursNeeded
+    }
+
+    private void calcDiffHours() {
         int differenceHours = myTotalWorkHours - totalWorkHoursNeeded;
-        int differenceMinutes = myTotalWorkMiuntes - totalWorkMinutesNeeded;
+        int differenceMinutes = myTotalWorkMinutes - totalWorkMinutesNeeded;
         String differenceSign = (differenceHours >= 0) ? "+" : "-";
         differenceHours = Math.abs(differenceHours);
         differenceMinutes = Math.abs(differenceMinutes);
-
-        // Display the difference
         String differenceTime = String.format("%02d:%02d", differenceHours, differenceMinutes);
         if (differenceHours > 0 || differenceMinutes > 0) {
-            String differenceMessage = "You are " + differenceSign + " " + differenceTime + " ";
-            if (differenceHours > 0) {
-                differenceMessage += "hours ";
-            }
-            if (differenceMinutes > 0) {
-                differenceMessage += "and minutes ";
-            }
+            String differenceMessage = "You have ";
+            differenceMessage += (differenceHours > 0) ? differenceHours + " hours " : "";
+            differenceMessage += (differenceMinutes > 0) ? differenceMinutes + " minutes " : "";
+
             if (differenceSign.equals("+")) {
-                differenceMessage += "above the needed hours.";
+                differenceMessage += "more than the required hours.";
             } else {
-                differenceMessage += "below the needed hours.";
+                differenceMessage += "less than the required hours.";
             }
             System.out.println(differenceMessage);
         } else {
-            System.out.println("You have fulfilled the needed hours.");
+            System.out.println("You have completed the required hours.");
         }
+
     }
+
+    private void displayMessage(){
+        System.out.println("Total work hours needed until today: " + totalWorkHoursNeeded + " hours and " + totalWorkMinutesNeeded + " minutes.");
+        System.out.println("Total hours worked until today: " + myTotalWorkHours + " hours and " + myTotalWorkMinutes + " minutes.");
+
+    }
+
 
 }

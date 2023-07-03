@@ -12,14 +12,14 @@ public class ConnectToMalam {
     String password;
     WebDriverWait wait;
 
-    public ConnectToMalam(String userName, String password, WebDriver driver) {
-        this.userName = userName;
-        this.password = password;
+    public ConnectToMalam(WebDriver driver) {
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(10));
     }
 
-    public void start() {
+    public void start(String userName, String password) {
+        this.userName = userName;
+        this.password = password;
         openMalamPage();
         enterCredentials();
         enterAttendanceArea();
