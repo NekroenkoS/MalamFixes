@@ -33,7 +33,7 @@ public class CalculateHours {
         List<WebElement> elements = driver.findElements(By.xpath("//*[@id=\"pt1:dataTable::db\"]/table/tbody/tr"));
         handleHours(elements);
         displayMessage();
-        calcDiffHours();
+        calculateDifference();
     }
 
     private void waitForMalam(){
@@ -82,7 +82,7 @@ public class CalculateHours {
         }
     }
 
-    private void calcDiffHours() {
+    private void calculateDifference() {
         int differenceHours = myTotalWorkHours - totalWorkHoursNeeded;
         int differenceMinutes = myTotalWorkMinutes - totalWorkMinutesNeeded;
         String differenceSign = (differenceHours >= 0) ? "+" : "-";
