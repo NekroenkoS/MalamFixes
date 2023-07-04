@@ -1,6 +1,6 @@
 # QT Malam Assistant
 
-The QT Malam Helper is a program designed to assist with two main tasks: calculating working hours versus working hours needed and automatically changing the project number on the Malam website.
+The QT Malam Assistant is a program designed to assist with two main tasks: calculating working hours versus working hours needed and automatically changing the project number on the Malam website.
 
 ## Prerequisites
 
