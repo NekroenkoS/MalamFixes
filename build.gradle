@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '7.0.0'
+}
+
+mainClassName = 'com.sergeysolutions.malamassistant.Main'
+
+group 'com.sergeysolutions.malamassistant'
+version '1.0-SNAPSHOT'
+sourceCompatibility = 1.9
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.seleniumhq.selenium:selenium-java:4.10.0'
+
+}
+targetCompatibility = JavaVersion.VERSION_1_9
