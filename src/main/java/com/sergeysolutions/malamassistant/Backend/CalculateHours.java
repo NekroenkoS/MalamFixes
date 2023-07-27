@@ -21,8 +21,8 @@ public class CalculateHours {
     private int totalWorkMinutesNeeded;
     private int row;
 
-    public CalculateHours(String userName, String password) throws IOException {
-        driver = new Utils().webDriverInit();
+    public CalculateHours(String userName, String password, boolean isHeadless) throws IOException {
+        driver = new Utils().webDriverInit(isHeadless);
         new ConnectToMalam(driver).start(userName, password);
         this.myTotalWorkHours = 0;
         this.myTotalWorkMinutes = 0;
@@ -32,12 +32,13 @@ public class CalculateHours {
 
     }
 
-    public void start(){
+    public void start(boolean keepAlive){
         waitForMalam();
         List<WebElement> elements = driver.findElements(By.xpath("//*[@id=\"pt1:dataTable::db\"]/table/tbody/tr"));
         handleHours(elements);
         displayMessage();
         calculateDifference();
+        if(!keepAlive) { driver.quit(); }
     }
 
     private void waitForMalam(){
@@ -100,10 +101,8 @@ public class CalculateHours {
 
             if (differenceSign.equals("+")) {
                 differenceMessage += "more than the required hours.";
-                MalamAssistantUi.getInstance().appendLog(differenceMessage + "more than the required hours.");
             } else {
                 differenceMessage += "less than the required hours.";
-                MalamAssistantUi.getInstance().appendLog(differenceMessage + "less than the required hours.");
             }
             System.out.println(differenceMessage);
             MalamAssistantUi.getInstance().appendLog(differenceMessage);

@@ -11,6 +11,6 @@ public class Main {
         String newProjectNumber = "newProjectNumber";
 
         //new ChangeProjectNumber(userName,password).start(oldProjectNumber,newProjectNumber);
-        new CalculateHours(userName,password).start();
+        //new CalculateHours(userName,password).start();
     }
 }

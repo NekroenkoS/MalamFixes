@@ -1,5 +1,6 @@
 package com.sergeysolutions.malamassistant.Backend;
 
+import com.sergeysolutions.malamassistant.FrontEnd.MalamAssistantUi;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -15,17 +16,18 @@ public class ChangeProjectNumber {
     String oldProjectNumber;
     String newProjectNumber;
 
-    public ChangeProjectNumber(String userName, String password) throws IOException {
-        this.driver = new Utils().webDriverInit();
+    public ChangeProjectNumber(String userName, String password, boolean isHeadless) throws IOException {
+        this.driver = new Utils().webDriverInit(isHeadless);
         new ConnectToMalam(driver).start(userName, password);
     }
 
-    public void start(String oldProjectNumber, String newProjectNumber){
+    public void start(String oldProjectNumber, String newProjectNumber, boolean keepAlive){
         this.oldProjectNumber = oldProjectNumber;
         this.newProjectNumber = newProjectNumber;
         waitForMalamVisibility();
         updateProjectNumber(oldProjectNumber, newProjectNumber);
         clickSave();
+        if (!keepAlive){driver.quit();}
     }
 
     private void waitForMalamVisibility() {
@@ -44,10 +46,12 @@ public class ChangeProjectNumber {
             element.clear();
             element.sendKeys(newProjectNumber);
         }
+        MalamAssistantUi.getInstance().appendLog("Located " + elements.size() + " instances to replace.");
     }
 
     private void clickSave() {
         WebElement button = driver.findElement(By.xpath("//td/button[@id='pt1:saveButton']"));
         button.click();
+        MalamAssistantUi.getInstance().appendLog("Successfully replaced all instances and saved the changes");
     }
 }
