@@ -199,7 +199,7 @@ public class MalamAssistantUi {
         calculateHoursPanel.add(password, gbc);
 
         gbc.gridx = 1;
-        passwordFieldForCalc = new JTextField(10);
+        passwordFieldForCalc = new JPasswordField(10);
         calculateHoursPanel.add(passwordFieldForCalc, gbc);
         passwordFieldForCalc.setFont(font1);
         gbc.gridx = 0;
@@ -253,7 +253,7 @@ public class MalamAssistantUi {
         switchProjectsPanel.add(password, gbc);
 
         gbc.gridx = 1;
-        passwordFieldForSwitchProjects = new JTextField(10);
+        passwordFieldForSwitchProjects = new JPasswordField(10);
         switchProjectsPanel.add(passwordFieldForSwitchProjects, gbc);
         passwordFieldForSwitchProjects.setFont(font1);
 
